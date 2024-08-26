@@ -6,6 +6,8 @@ Xiangnan He et al. LightGCN: Simplifying and Powering Graph Convolution Network 
 @author: Jianbai Ye (gusye@mail.ustc.edu.cn)
 '''
 
+# 这个文件主要存放超参数，从parse里面获取
+
 import os
 from os.path import join
 import torch
@@ -31,19 +33,34 @@ if not os.path.exists(FILE_PATH):
 
 config = {}
 all_dataset = ['lastfm', 'gowalla', 'yelp2018', 'amazon-book']
-all_models  = ['mf', 'lgn']
+all_models  = ['mf', 'lgn', 'gc_dn']
 # config['batch_size'] = 4096
+# config['bpr_batch_size'] = args.bpr_batch
+# config['latent_dim_rec'] = args.recdim
+# config['lightGCN_n_layers']= args.layer
+# config['dropout'] = args.dropout
+# config['keep_prob']  = args.keepprob
+# config['A_n_fold'] = args.a_fold
+# config['test_u_batch_size'] = args.testbatch
+# config['multicore'] = args.multicore
+# config['lr'] = args.lr
+# config['decay'] = args.decay
+# config['pretrain'] = args.pretrain
+# config['A_split'] = False
+# config['bigdata'] = False
+
+# 调整
 config['bpr_batch_size'] = args.bpr_batch
 config['latent_dim_rec'] = args.recdim
-config['lightGCN_n_layers']= args.layer
+config['lightGCN_n_layers']= 3
 config['dropout'] = args.dropout
 config['keep_prob']  = args.keepprob
 config['A_n_fold'] = args.a_fold
-config['test_u_batch_size'] = args.testbatch
+config['test_u_batch_size'] = 100
 config['multicore'] = args.multicore
 config['lr'] = args.lr
 config['decay'] = args.decay
-config['pretrain'] = args.pretrain
+config['pretrain'] = 0 # 默认不进行预训练，从头开始
 config['A_split'] = False
 config['bigdata'] = False
 
@@ -52,8 +69,12 @@ device = torch.device('cuda' if GPU else "cpu")
 CORES = multiprocessing.cpu_count() // 2
 seed = args.seed
 
-dataset = args.dataset
-model_name = args.model
+# dataset = args.dataset
+# model_name = args.model
+dataset = 'gowalla'
+# model_name = 'lgn'
+model_name = 'gc_dn'
+
 if dataset not in all_dataset:
     raise NotImplementedError(f"Haven't supported {dataset} yet!, try {all_dataset}")
 if model_name not in all_models:
@@ -62,12 +83,19 @@ if model_name not in all_models:
 
 
 
+# TRAIN_epochs = args.epochs
+# LOAD = args.load
+# PATH = args.path
+# topks = eval(args.topks)
+# tensorboard = args.tensorboard
+# comment = args.comment
 TRAIN_epochs = args.epochs
-LOAD = args.load
+LOAD = 0 # 默认从头开始，不保存、解析模型
 PATH = args.path
 topks = eval(args.topks)
 tensorboard = args.tensorboard
 comment = args.comment
+
 # let pandas shut up
 from warnings import simplefilter
 simplefilter(action="ignore", category=FutureWarning)

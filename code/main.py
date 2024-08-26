@@ -13,11 +13,14 @@ import Procedure
 import register
 from register import dataset
 
+from denoise_module import denoise
+
 # ==============================
 utils.set_seed(world.seed)
 print(">>SEED:", world.seed)
 # ==============================
 
+# Recmodel：即使用的协同过滤模型，有纯MF和LightGCN
 Recmodel = register.MODELS[world.model_name](world.config, dataset)
 Recmodel = Recmodel.to(world.device)
 bpr = utils.BPRLoss(Recmodel, world.config)
@@ -48,6 +51,12 @@ try:
         if epoch %10 == 0:
             cprint("[TEST]")
             Procedure.Test(dataset, Recmodel, epoch, w, world.config['multicore'])
+        
+        # 进行聚类，输出噪音判定矩阵Rn
+        # 图卷积的矩阵更新为：(R-Rn) 哈达玛积 R
+        RNoise = denoise(Recmodel.get_origin_graph())
+        Recmodel.update_graph(RNoise)
+
         output_information = Procedure.BPR_train_original(dataset, Recmodel, bpr, epoch, neg_k=Neg_k,w=w)
         print(f'EPOCH[{epoch+1}/{world.TRAIN_epochs}] {output_information}')
         torch.save(Recmodel.state_dict(), weight_file)
