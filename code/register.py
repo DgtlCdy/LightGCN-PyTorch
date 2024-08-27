@@ -5,7 +5,9 @@ import utils
 from pprint import pprint
 
 if world.dataset in ['gowalla', 'yelp2018', 'amazon-book']:
-    dataset = dataloader.Loader(path="../data/"+world.dataset)
+    # dataset = dataloader.Loader(path="../data/"+world.dataset)
+    # 改为绝对路径
+    dataset = dataloader.Loader(path="D:/codes/LightGCN-Pytorch/data/"+world.dataset)
 elif world.dataset == 'lastfm':
     dataset = dataloader.LastFM()
 

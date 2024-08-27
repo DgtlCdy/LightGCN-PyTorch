@@ -327,7 +327,8 @@ class Loader(BasicDataset):
         col = torch.Tensor(coo.col).long()
         index = torch.stack([row, col])
         data = torch.FloatTensor(coo.data)
-        return torch.sparse.FloatTensor(index, data, torch.Size(coo.shape))
+        # return torch.sparse.FloatTensor(index, data, torch.Size(coo.shape))
+        return torch.sparse_coo_tensor(index, data, torch.Size(coo.shape))
         
     def getSparseGraph(self):
         print("loading adjacency matrix")

@@ -6,6 +6,8 @@ Xiangnan He et al. LightGCN: Simplifying and Powering Graph Convolution Network 
 @author: Jianbai Ye (gusye@mail.ustc.edu.cn)
 '''
 
+# 这个文件主要存放超参数，从parse里面获取
+
 import os
 from os.path import join
 import torch
@@ -33,6 +35,21 @@ config = {}
 all_dataset = ['lastfm', 'gowalla', 'yelp2018', 'amazon-book']
 all_models  = ['mf', 'lgn']
 # config['batch_size'] = 4096
+# config['bpr_batch_size'] = args.bpr_batch
+# config['latent_dim_rec'] = args.recdim
+# config['lightGCN_n_layers']= args.layer
+# config['dropout'] = args.dropout
+# config['keep_prob']  = args.keepprob
+# config['A_n_fold'] = args.a_fold
+# config['test_u_batch_size'] = args.testbatch
+# config['multicore'] = args.multicore
+# config['lr'] = args.lr
+# config['decay'] = args.decay
+# config['pretrain'] = args.pretrain
+# config['A_split'] = False
+# config['bigdata'] = False
+
+# 暂时调整为手动定义超参数
 config['bpr_batch_size'] = args.bpr_batch
 config['latent_dim_rec'] = args.recdim
 config['lightGCN_n_layers']= args.layer
@@ -62,12 +79,19 @@ if model_name not in all_models:
 
 
 
-TRAIN_epochs = args.epochs
-LOAD = args.load
+# TRAIN_epochs = args.epochs
+# LOAD = args.load
+# PATH = args.path
+# topks = eval(args.topks)
+# tensorboard = args.tensorboard
+# comment = args.comment
+TRAIN_epochs = 25 # epoch暂时改为25
+LOAD = 0 # 默认从头开始，不保存、解析模型
 PATH = args.path
 topks = eval(args.topks)
 tensorboard = args.tensorboard
 comment = args.comment
+
 # let pandas shut up
 from warnings import simplefilter
 simplefilter(action="ignore", category=FutureWarning)
