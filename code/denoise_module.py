@@ -35,6 +35,6 @@ def denoise(GraphOrigin: torch.tensor):
 
     # 给边赋权值，然后根据概率定义噪声
 
-    # 最后将噪声矩阵拼接为(M+N)*(M+N)的规模
+    # 最后将噪声矩阵拼接为(M+N)*(M+N)的规模，然后又稀疏矩阵表示
     GraphNoiseAppend = 
     return GraphNoiseAppend

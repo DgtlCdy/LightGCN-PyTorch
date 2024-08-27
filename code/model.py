@@ -95,7 +95,7 @@ class LightGCN(BasicModel):
                  dataset:BasicDataset):
         super(LightGCN, self).__init__()
         self.config = config
-        self.dataset : dataloader.BasicDataset = dataset
+        self.dataset : BasicDataset = dataset
         self.__init_weight()
 
     def __init_weight(self):
@@ -231,7 +231,7 @@ class GC_DN(BasicModel):
                  dataset:BasicDataset):
         super(GC_DN, self).__init__()
         self.config = config
-        self.dataset : dataloader.BasicDataset = dataset
+        self.dataset : BasicDataset = dataset
         self.__init_weight()
 
     def __init_weight(self):
