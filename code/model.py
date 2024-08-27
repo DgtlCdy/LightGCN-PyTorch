@@ -20,7 +20,13 @@ class BasicModel(nn.Module):
     
     def getUsersRating(self, users):
         raise NotImplementedError
-    
+
+    # 定义用于多态的函数
+    def get_origin_graph(self):
+        raise NotImplementedError
+    def update_graph(self, RNoise):
+        raise NotImplementedError
+
 class PairWiseModel(BasicModel):
     def __init__(self):
         super(PairWiseModel, self).__init__()
@@ -34,7 +40,8 @@ class PairWiseModel(BasicModel):
             (log-loss, l2-loss)
         """
         raise NotImplementedError
-    
+
+
 class PureMF(BasicModel):
     def __init__(self, 
                  config:dict, 
@@ -86,7 +93,7 @@ class LightGCN(BasicModel):
                  dataset:BasicDataset):
         super(LightGCN, self).__init__()
         self.config = config
-        self.dataset : dataloader.BasicDataset = dataset
+        self.dataset : BasicDataset = dataset
         self.__init_weight()
 
     def __init_weight(self):

@@ -52,15 +52,15 @@ all_models  = ['mf', 'lgn']
 # 暂时调整为手动定义超参数
 config['bpr_batch_size'] = args.bpr_batch
 config['latent_dim_rec'] = args.recdim
-config['lightGCN_n_layers']= args.layer
+config['lightGCN_n_layers']= 3
 config['dropout'] = args.dropout
 config['keep_prob']  = args.keepprob
 config['A_n_fold'] = args.a_fold
-config['test_u_batch_size'] = args.testbatch
+config['test_u_batch_size'] = 100
 config['multicore'] = args.multicore
 config['lr'] = args.lr
 config['decay'] = args.decay
-config['pretrain'] = args.pretrain
+config['pretrain'] = 0 # 默认不进行预训练，从头开始
 config['A_split'] = False
 config['bigdata'] = False
 
@@ -69,8 +69,12 @@ device = torch.device('cuda' if GPU else "cpu")
 CORES = multiprocessing.cpu_count() // 2
 seed = args.seed
 
-dataset = args.dataset
-model_name = args.model
+
+# 选择数据集、模型
+# dataset = args.dataset
+# model_name = args.model
+dataset = 'gowalla'
+model_name = 'lgn'
 if dataset not in all_dataset:
     raise NotImplementedError(f"Haven't supported {dataset} yet!, try {all_dataset}")
 if model_name not in all_models:
