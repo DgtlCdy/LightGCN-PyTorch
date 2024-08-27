@@ -110,6 +110,12 @@ def getFileName():
         file = f"mf-{world.dataset}-{world.config['latent_dim_rec']}.pth.tar"
     elif world.model_name == 'lgn':
         file = f"lgn-{world.dataset}-{world.config['lightGCN_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
+    elif world.model_name == 'gcpd':
+        file = f"gcpd-{world.dataset}-{world.config['GCPD_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
+    elif world.model_name == 'gcdr':
+        file = f"gcdr-{world.dataset}-{world.config['GCDR_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
+    elif world.model_name == 'gcpd':
+        file = f"gcpddr-{world.dataset}-{world.config['GCPDDR_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
     return os.path.join(world.FILE_PATH,file)
 
 def minibatch(*tensors, **kwargs):

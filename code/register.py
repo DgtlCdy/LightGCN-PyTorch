@@ -24,5 +24,8 @@ print('===========end===================')
 
 MODELS = {
     'mf': model.PureMF,
-    'lgn': model.LightGCN
+    'lgn': model.LightGCN,
+    'gcpd': model.GCPD,
+    'gcdr': model.GCDR,
+    'gcpddr': model.GCPDDR
 }
