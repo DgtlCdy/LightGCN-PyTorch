@@ -12,9 +12,13 @@ utils.set_seed(world.seed)
 print(">>SEED:", world.seed)
 # ==============================
 import register
-from register import dataset
+from register import dataset  # 到这里，dataset就是一个获取到的Loader(BasicDataset)对象，存放了数据集
 
 from denoise_module import denoise
+
+# 用后即焚
+graphOrigin = dataset.getBipartiteGraph()
+denoisedGraph = denoise(graphOrigin)
 
 # Recmodel：即使用的协同过滤模型，现有MF和LightGCN
 Recmodel = register.MODELS[world.model_name](world.config, dataset)
@@ -41,6 +45,9 @@ else:
     w = None
     world.cprint("not enable tensorflowboard")
 
+# 获取原交互图二部图，用于聚类
+graphOrigin = dataset.getBipartiteGraph()
+
 try:
     for epoch in range(world.TRAIN_epochs):
         start = time.time()
@@ -50,6 +57,8 @@ try:
         
         # todo
         # 进行聚类，输出噪音判定矩阵Rn
+        denoisedGraph = denoise(graphOrigin)
+
         # 图卷积的矩阵更新为：(R-Rn) 哈达玛积 R
 
         output_information = Procedure.BPR_train_original(dataset, Recmodel, bpr, epoch, neg_k=Neg_k,w=w)

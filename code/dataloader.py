@@ -57,6 +57,9 @@ class BasicDataset(Dataset):
         """
         raise NotImplementedError
     
+    def getBipartiteGraph(self):
+        raise NotImplementedError
+
     def getSparseGraph(self):
         """
         build a graph in torch.sparse.IntTensor.
@@ -329,7 +332,11 @@ class Loader(BasicDataset):
         data = torch.FloatTensor(coo.data)
         # return torch.sparse.FloatTensor(index, data, torch.Size(coo.shape))
         return torch.sparse_coo_tensor(index, data, torch.Size(coo.shape))
-        
+    
+    # 新增函数，用于获取原始二部图信息，拿来做聚类工作
+    def getBipartiteGraph(self):
+        return self.UserItemNet
+
     def getSparseGraph(self):
         print("loading adjacency matrix")
         if self.Graph is None:
