@@ -59,6 +59,9 @@ class BasicDataset(Dataset):
     
     def getBipartiteGraph(self):
         raise NotImplementedError
+    
+    def getAdjList(self):
+        raise NotImplementedError
 
     def getSparseGraph(self):
         """
@@ -234,6 +237,7 @@ class Loader(BasicDataset):
         self.n_user = 0
         self.m_item = 0
         train_file = path + '/train.txt'
+        self.train_file_dc = train_file
         test_file = path + '/test.txt'
         self.path = path
         trainUniqueUsers, trainItem, trainUser = [], [], []
@@ -336,6 +340,20 @@ class Loader(BasicDataset):
     # 新增函数，用于获取原始二部图信息，拿来做聚类工作
     def getBipartiteGraph(self):
         return self.UserItemNet
+    
+
+    def getAdjList(self):
+        adj_list = []
+        with open(self.train_file_dc) as f:
+            for l in f.readlines():
+                if len(l) > 0:
+                    l = l.strip('\n').split(' ')
+                    items = [int(i) for i in l[1:]]
+                    adj_list.append(items)
+        for i in range(self.m_item):
+            adj_list.append([])
+        return adj_list
+
 
     def getSparseGraph(self):
         print("loading adjacency matrix")
