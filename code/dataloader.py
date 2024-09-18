@@ -221,7 +221,7 @@ class Loader(BasicDataset):
     gowalla dataset
     """
 
-    def __init__(self,config = world.config,path="../data/gowalla"):
+    def __init__(self,config = world.config,path="C:/codes/LightGCN-Pytorch/data/gowalla"):
         # train or test
         cprint(f'loading [{path}]')
         self.split = config['A_split']

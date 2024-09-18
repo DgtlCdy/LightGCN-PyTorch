@@ -7,7 +7,7 @@ from pprint import pprint
 if world.dataset in ['gowalla', 'yelp2018', 'amazon-book']:
     # dataset = dataloader.Loader(path="../data/"+world.dataset)
     # 改为绝对路径
-    dataset = dataloader.Loader(path="D:/codes/LightGCN-Pytorch/data/"+world.dataset)
+    dataset = dataloader.Loader(path="C:/codes/LightGCN-Pytorch/data/"+world.dataset)
 elif world.dataset == 'lastfm':
     dataset = dataloader.LastFM()
 
@@ -24,5 +24,8 @@ print('===========end===================')
 
 MODELS = {
     'mf': model.PureMF,
-    'lgn': model.LightGCN
+    'lgn': model.LightGCN,
+    'vae': model.VAE,
+    'vgae': model.VGAE,
+    'vlgn': model.VLGN
 }

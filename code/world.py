@@ -33,7 +33,7 @@ if not os.path.exists(FILE_PATH):
 
 config = {}
 all_dataset = ['lastfm', 'gowalla', 'yelp2018', 'amazon-book']
-all_models  = ['mf', 'lgn']
+all_models  = ['mf', 'lgn', 'vae', 'vgae', 'vlgn'] # vlgn：先用vae获取u-u、i-i的隐边，然后填充至交互矩阵A，最后用于GCN
 # config['batch_size'] = 4096
 # config['bpr_batch_size'] = args.bpr_batch
 # config['latent_dim_rec'] = args.recdim
@@ -50,17 +50,17 @@ all_models  = ['mf', 'lgn']
 # config['bigdata'] = False
 
 # 暂时调整为手动定义超参数
-config['bpr_batch_size'] = args.bpr_batch
-config['latent_dim_rec'] = args.recdim
-config['lightGCN_n_layers']= args.layer
-config['dropout'] = args.dropout
-config['keep_prob']  = args.keepprob
+config['bpr_batch_size'] = 2048
+config['latent_dim_rec'] = 64  # 隐向量维度
+config['lightGCN_n_layers']= 3
+config['dropout'] = 0 # 默认先不用，性能优化的时候再用即可
+config['keep_prob']  = 0.5
 config['A_n_fold'] = args.a_fold
 config['test_u_batch_size'] = args.testbatch
 config['multicore'] = args.multicore
-config['lr'] = args.lr
+config['lr'] = 0.001 # 学习率
 config['decay'] = args.decay
-config['pretrain'] = args.pretrain
+config['pretrain'] = 0
 config['A_split'] = False
 config['bigdata'] = False
 
@@ -69,8 +69,9 @@ device = torch.device('cuda' if GPU else "cpu")
 CORES = multiprocessing.cpu_count() // 2
 seed = args.seed
 
-dataset = args.dataset
-model_name = args.model
+dataset = 'gowalla'
+# model_name = 'lgn'
+model_name = 'vlgn'
 if dataset not in all_dataset:
     raise NotImplementedError(f"Haven't supported {dataset} yet!, try {all_dataset}")
 if model_name not in all_models:
@@ -88,9 +89,10 @@ if model_name not in all_models:
 TRAIN_epochs = 25 # epoch暂时改为25
 LOAD = 0 # 默认从头开始，不保存、解析模型
 PATH = args.path
-topks = eval(args.topks)
+topks = eval(args.topks) # 默认[20]
 tensorboard = args.tensorboard
-comment = args.comment
+# comment = args.comment # 默认lgn
+comment = 'vlgn'
 
 # let pandas shut up
 from warnings import simplefilter
