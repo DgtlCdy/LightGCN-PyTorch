@@ -57,6 +57,14 @@ class BasicDataset(Dataset):
         """
         raise NotImplementedError
     
+    def getBipartiteGraph(self):
+        """
+        build a u-i bipartite graph R in torch.sparse.IntTensor.
+        Details in NGCF's matrix form
+        R(m*n) = 1 if interaction or 0 if no interaction.
+        """
+        raise NotImplementedError
+
     def getSparseGraph(self):
         """
         build a graph in torch.sparse.IntTensor.
@@ -329,7 +337,11 @@ class Loader(BasicDataset):
         data = torch.FloatTensor(coo.data)
         # return torch.sparse.FloatTensor(index, data, torch.Size(coo.shape))
         return torch.sparse_coo_tensor(index, data, torch.Size(coo.shape))
-        
+    
+    def getBipartiteGraph(self):
+        # R = self.UserItemNet.tolil() (this sentence is a reference resource)
+        return self.UserItemNet
+
     def getSparseGraph(self):
         print("loading adjacency matrix")
         if self.Graph is None:
