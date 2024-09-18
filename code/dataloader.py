@@ -352,7 +352,7 @@ class Loader(BasicDataset):
                     adj_list.append(items)
         for i in range(self.m_item):
             adj_list.append([])
-        return adj_list
+        return adj_list, self.n_users, self.m_items
 
 
     def getSparseGraph(self):

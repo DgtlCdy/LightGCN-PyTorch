@@ -23,34 +23,9 @@ from time import time
 import random
 from sklearn.cluster import KMeans
 
-import pymetis
-import networkx as nx
-import itertools
-
-
-def get_user_labels_kmeans(graphArray, num_clusters):
-    graphOrigin, n_users, m_items = dataset.getAdjList()
-    print('test1')
-    user_social_graph = []
-    for i in range(n_users):
-        user_social_graph.append([])
-    for item_index in range(m_items):
-        result = []
-        for user_index, sub_list in enumerate(graphOrigin):
-            if item_index in sub_list:
-                result.append(user_index)
-        # 创建图结构
-        fc = list(itertools.combinations(result, 2))
-        for fc_edge in fc:
-            user_social_graph[fc_edge[0]].append(fc_edge[1])
-    n_cuts, membership = pymetis.part_graph(64, adjacency=user_social_graph)
-    for i in range(64):
-        print(f'users-count of {i}th is: {membership.count(i)}')
-    return membership
-
 
 # 如何均匀地聚类是一个问题，k-means聚类肯定不行
-def get_user_labels_kmeans(graphArray, num_clusters):
+def get_user_labels(graphArray, num_clusters):
     X = np.array([[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]])
     kmeans = KMeans(n_clusters=num_clusters, random_state=0)
     predicted_labels = kmeans.fit_predict(graphArray)
