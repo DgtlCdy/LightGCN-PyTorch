@@ -23,8 +23,9 @@ from sklearn.metrics import roc_auc_score
 CORES = multiprocessing.cpu_count() // 2
 
 
-def BPR_train_original(dataset, recommend_model, loss_class, epoch, neg_k=1, w=None):
+def BPR_train_original(dataset, recommend_model: model.LightGCN, loss_class, epoch, neg_k=1, w=None):
     Recmodel = recommend_model
+    Recmodel.training = True
     Recmodel.train()
     bpr: utils.BPRLoss = loss_class
     
@@ -77,6 +78,8 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
     dataset: utils.BasicDataset
     testDict: dict = dataset.testDict
     Recmodel: model.LightGCN
+
+    Recmodel.training = False
     # eval mode with no dropout
     Recmodel = Recmodel.eval()
     max_K = max(world.topks)
@@ -149,5 +152,7 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
                           {str(world.topks[i]): results['ndcg'][i] for i in range(len(world.topks))}, epoch)
         if multicore == 1:
             pool.close()
-        print(results)
+        with open('D:/TestResults/LightGCN-dropout0.5.txt', 'a') as file_origin:
+            print(f'{epoch}th epoch test result:', file=file_origin)
+            print(results, file=file_origin)
         return results

@@ -85,7 +85,7 @@ if model_name not in all_models:
 # topks = eval(args.topks)
 # tensorboard = args.tensorboard
 # comment = args.comment
-TRAIN_epochs = 25 # epoch暂时改为25
+TRAIN_epochs = 1000 # epoch暂时改为100
 LOAD = 0 # 默认从头开始，不保存、解析模型
 PATH = args.path
 topks = eval(args.topks)
