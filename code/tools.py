@@ -1,14 +1,12 @@
 import os
 import numpy as np
 import torch
-from scipy.sparse import csr_matrix
+import scipy.sparse as sp
 
 import world
-import dataloader
 
 
-def get_uu_graph(dataset: dataloader.Loader):
-    bi_graph = dataset.getBipartiteGraph()
+def get_uu_graph(bi_graph: sp.csr_matrix):
     numUsers = bi_graph.shape[0]
     dimUsers = bi_graph.shape[1]
 
@@ -41,5 +39,5 @@ def get_uu_graph(dataset: dataloader.Loader):
     count_whole = len(uu_adj_flatten)
     count = uu_adj_flatten.count(1)
 
-    uu_graph = csr_matrix(uu_graph)
-    return uu_graph
+    uu_adj_csr = sp.csr_matrix(uu_adj.cpu().numpy())
+    return uu_adj_csr

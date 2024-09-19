@@ -38,16 +38,6 @@ else:
     world.cprint("not enable tensorflowboard")
 
 
-# vlgn的数据预处理工作
-if world.model_name == 'vlgn':
-    # 重建用户-物品交互矩阵
-    Recmodel.restore_ui_adj(dataset)
-    # 新建用户-物品交互矩阵
-    Recmodel.add_uu_adj(dataset)
-    # 新建物品-物品交互矩阵
-    Recmodel.add_ii_adj(dataset)
-
-
 # 开始进行LightGCN的图神经网络训练，并定期测试
 try:
     for epoch in range(world.TRAIN_epochs):
@@ -58,6 +48,7 @@ try:
         output_information = Procedure.BPR_train_original(dataset, Recmodel, bpr, epoch, neg_k=Neg_k,w=w)
         print(f'EPOCH[{epoch+1}/{world.TRAIN_epochs}] {output_information}')
         torch.save(Recmodel.state_dict(), weight_file)
+
 finally:
     if world.tensorboard:
         w.close()

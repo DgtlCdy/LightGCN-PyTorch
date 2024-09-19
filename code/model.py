@@ -531,9 +531,13 @@ class VLGN(BasicModel):
             self.embedding_item.weight.data.copy_(torch.from_numpy(self.config['item_emb']))
             print('use pretarined data')
         self.f = nn.Sigmoid()
-        self.Graph = self.dataset.getSparseGraph()
-        # Graph = |I,   R|
-        #         |R^T, I|
+        # self.Graph = self.dataset.getSparseGraph()
+        self.Graph = self.dataset.getSparseGraph_base()
+        # origin: Graph = |0,   R|
+        #                 |R^T, 0|
+        # now:    Graph = |uu_graph, R       |
+        #                 |R^T,      ii_graph|
+
         print(f"vlgn is already to go(dropout:{self.config['dropout']})")
 
         # print("save_txt")
@@ -556,20 +560,6 @@ class VLGN(BasicModel):
         else:
             graph = self.__dropout_x(self.Graph, keep_prob)
         return graph
-    
-
-    def restore_ui_adj(self, dataset):
-        a = 0
-        return
-    
-    def add_uu_adj(self, dataset):
-        uu_graph = tools.get_uu_graph(dataset)
-        self.Graph[:self.num_users, :self.num_users] = uu_graph
-        return
-    
-    def add_ii_adj(self, dataset):
-        a = 2
-        return
 
 
     def computer(self):

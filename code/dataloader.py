@@ -20,6 +20,7 @@ import world
 from world import cprint
 from time import time
 
+import tools
 class BasicDataset(Dataset):
     def __init__(self):
         print("init dataset")
@@ -229,7 +230,7 @@ class Loader(BasicDataset):
     gowalla dataset
     """
 
-    def __init__(self,config = world.config,path="C:/codes/LightGCN-Pytorch/data/gowalla"):
+    def __init__(self,config = world.config,path="C:/codes/my_model/data/gowalla"):
         # train or test
         cprint(f'loading [{path}]')
         self.split = config['A_split']
@@ -376,10 +377,59 @@ class Loader(BasicDataset):
                 self.Graph = self._split_A_hat(norm_adj)
                 print("done split matrix")
             else:
-                self.Graph = self._convert_sp_mat_to_sp_tensor(norm_adj)
+                self.Graph = self._convert_sp_mat_to_sp_tensor(norm_adj) # torch.sparse_coo_tensor
                 self.Graph = self.Graph.coalesce().to(world.device)
                 print("don't split the matrix")
         return self.Graph
+
+
+    def getSparseGraph_base(self):
+        print("loading adjacency matrix")
+        if self.Graph is None:
+            try:
+                pre_adj_mat = sp.load_npz(self.path + '/s_pre_adj_mat.npz')
+                print("successfully loaded...")
+                norm_adj = pre_adj_mat
+            except :
+                print("generating adjacency matrix")
+                s = time()
+                adj_mat = sp.dok_matrix((self.n_users + self.m_items, self.n_users + self.m_items), dtype=np.float32)
+                adj_mat = adj_mat.tolil()
+                R = self.UserItemNet.tolil()
+                adj_mat[:self.n_users, self.n_users:] = R
+                adj_mat[self.n_users:, :self.n_users] = R.T
+
+                # vlgn下的数据预处理工作
+                # 在邻接矩阵初始化时，加入uu、ii间的相似性连接
+                uu_graph = tools.get_uu_graph(self.UserItemNet).tolil()
+                adj_mat[:self.n_users, :self.n_users] = uu_graph
+                # ii_graph = tools.get_ii_graph(R)
+                # adj_mat[self.n_users:, self.n_users:] = ii_graph
+
+                adj_mat = adj_mat.todok()
+                # adj_mat = adj_mat + sp.eye(adj_mat.shape[0])
+                
+                rowsum = np.array(adj_mat.sum(axis=1))
+                d_inv = np.power(rowsum, -0.5).flatten()
+                d_inv[np.isinf(d_inv)] = 0.
+                d_mat = sp.diags(d_inv)
+                
+                norm_adj = d_mat.dot(adj_mat)
+                norm_adj = norm_adj.dot(d_mat)
+                norm_adj = norm_adj.tocsr()
+                end = time()
+                print(f"costing {end-s}s, saved norm_mat...")
+                sp.save_npz(self.path + '/s_pre_adj_mat.npz', norm_adj)
+
+            if self.split == True:
+                self.Graph = self._split_A_hat(norm_adj)
+                print("done split matrix")
+            else:
+                self.Graph = self._convert_sp_mat_to_sp_tensor(norm_adj) # torch.sparse_coo_tensor
+                self.Graph = self.Graph.coalesce().to(world.device)
+                print("don't split the matrix")
+        return self.Graph
+
 
     def __build_test(self):
         """
