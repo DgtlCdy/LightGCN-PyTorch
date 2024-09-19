@@ -564,6 +564,7 @@ class VLGN(BasicModel):
     
     def add_uu_adj(self, dataset):
         uu_graph = tools.get_uu_graph(dataset)
+        self.Graph[:self.num_users, :self.num_users] = uu_graph
         return
     
     def add_ii_adj(self, dataset):

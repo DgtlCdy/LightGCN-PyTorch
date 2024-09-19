@@ -28,6 +28,7 @@ def BPR_train_original(dataset, recommend_model, loss_class, epoch, neg_k=1, w=N
     Recmodel.train()
     bpr: utils.BPRLoss = loss_class
     
+    #成对样本从dataset中获取，图结构在Recmodel中已经建立好了
     with timer(name="Sample"):
         S = utils.UniformSample_original(dataset)
     users = torch.Tensor(S[:, 0]).long()
