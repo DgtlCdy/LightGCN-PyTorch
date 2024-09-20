@@ -386,11 +386,12 @@ class Loader(BasicDataset):
     def getSparseGraph_base(self):
         print("loading adjacency matrix")
         if self.Graph is None:
-            try:
-                pre_adj_mat = sp.load_npz(self.path + '/s_pre_adj_mat.npz')
-                print("successfully loaded...")
-                norm_adj = pre_adj_mat
-            except :
+            # try:
+            #     pre_adj_mat = sp.load_npz(self.path + '/s_pre_adj_mat.npz')
+            #     print("successfully loaded...")
+            #     norm_adj = pre_adj_mat
+            # except :
+            if True: # 强制执行，不加载
                 print("generating adjacency matrix")
                 s = time()
                 adj_mat = sp.dok_matrix((self.n_users + self.m_items, self.n_users + self.m_items), dtype=np.float32)
