@@ -589,7 +589,7 @@ class VLGN(BasicModel):
                 all_emb = side_emb
             else:
                 all_emb = torch.sparse.mm(g_droped, all_emb)
-            embs.append(all_emb)
+            embs.append(all_emb * (1. / (layer + 1.)))
         embs = torch.stack(embs, dim=1)
         #print(embs.size())
         light_out = torch.mean(embs, dim=1)

@@ -151,7 +151,7 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
         if multicore == 1:
             pool.close()
         print(results)
-        with open('C:/test_results/LightGCN_with_uu_graph_base.txt', 'a') as file_test_result:
+        with open('C:/test_results/LightGCN_with_uu_graph_baseline_1dk+1.txt', 'a') as file_test_result:
             print(f'{epoch}th epoch test result:', file=file_test_result)
             print(results, file=file_test_result)
         return results

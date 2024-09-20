@@ -16,28 +16,26 @@ def get_uu_graph(bi_graph: sp.csr_matrix):
     if os.path.isfile('C:/codes/buffer/uu_graph.pt'):
         uu_graph = torch.load('C:/codes/buffer/uu_graph.pt')
     else:
-        uu_graph = torch.eye(numUsers, dtype=torch.float32, device=world.device)
+        uu_graph = torch.zeros([numUsers, numUsers], dtype=torch.float32, device=world.device)
         for idx1, u1 in enumerate(user_array):
             for idx2, u2 in enumerate(user_array):
-                if idx1 == idx2:
-                    continue
                 intersection = torch.logical_and(u1, u2).sum()
                 union = torch.logical_or(u1, u2).sum()
                 similarity: float = intersection / union
                 uu_graph[idx1][idx2] = similarity
                 uu_graph[idx2][idx1] = similarity
-                # if similarity >= 0.1:
-                #     uu_graph[idx1][idx2] = 1
-                #     uu_graph[idx2][idx1] = 1
         torch.save(uu_graph, 'C:/codes/buffer/uu_graph.pt')
     
     # 设定阈值，相似度高于此阈值的，邻接矩阵设为1
-    similarity_threshold = 0.1
-    uu_adj = (uu_graph - similarity_threshold + 1).int()
+    similarity_threshold = 0.08
+    # uu_adj = (uu_graph - similarity_threshold + 1).int()
+    # for i in range(uu_adj.shape[0]):
+    #     uu_adj[i][i] = 0
+    uu_adj = torch.zeros([numUsers, numUsers], dtype=torch.float32, device=world.device)
 
-    uu_adj_flatten = uu_adj.flatten().tolist()
-    count_whole = len(uu_adj_flatten)
-    count = uu_adj_flatten.count(1)
+    # uu_adj_flatten = uu_adj.flatten().tolist()
+    # count_whole = len(uu_adj_flatten)
+    # count = uu_adj_flatten.count(1)
 
     uu_adj_csr = sp.csr_matrix(uu_adj.cpu().numpy())
     return uu_adj_csr
