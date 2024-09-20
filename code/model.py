@@ -22,16 +22,7 @@ class BasicModel(nn.Module):
     
     def getUsersRating(self, users):
         raise NotImplementedError
-    
-    def restore_ui_adj(self):
-        raise NotImplementedError
-    
-    def add_uu_adj(self):
-        raise NotImplementedError
-    
-    def add_ii_adj(self):
-        raise NotImplementedError
-    
+
 class PairWiseModel(BasicModel):
     def __init__(self):
         super(PairWiseModel, self).__init__()
