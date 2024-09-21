@@ -24,6 +24,7 @@ CORES = multiprocessing.cpu_count() // 2
 
 
 def BPR_train_original(dataset, recommend_model, loss_class, epoch, neg_k=1, w=None):
+    utils.print_log('start BPR_train_original') # testonly
     Recmodel = recommend_model
     Recmodel.train()
     bpr: utils.BPRLoss = loss_class
@@ -74,6 +75,7 @@ def test_one_batch(X):
         
             
 def Test(dataset, Recmodel, epoch, w=None, multicore=0):
+    utils.print_log('start Test') # testonly
     u_batch_size = world.config['test_u_batch_size']
     dataset: utils.BasicDataset
     testDict: dict = dataset.testDict
@@ -151,7 +153,7 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
         if multicore == 1:
             pool.close()
         print(results)
-        with open('C:/test_results/LightGCN_with_uu_graph_vae_sim0.1_1dk+1.txt', 'a') as file_test_result:
+        with open('C:/test_results/LightGCN_base_1dk+1.txt', 'a') as file_test_result:
             print(f'{epoch}th epoch test result:', file=file_test_result)
             print(results, file=file_test_result)
         return results

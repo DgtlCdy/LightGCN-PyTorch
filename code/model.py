@@ -522,7 +522,11 @@ class VLGN(BasicModel):
             self.embedding_item.weight.data.copy_(torch.from_numpy(self.config['item_emb']))
             print('use pretarined data')
         self.f = nn.Sigmoid()
+
+        # 原生的LightGCN
         # self.Graph = self.dataset.getSparseGraph()
+
+        # VLGN
         self.Graph = self.dataset.getSparseGraph_base()
         # origin: Graph = |0,   R|
         #                 |R^T, 0|

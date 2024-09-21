@@ -41,6 +41,7 @@ else:
 # 开始进行LightGCN的图神经网络训练，并定期测试
 try:
     for epoch in range(world.TRAIN_epochs):
+        utils.print_log('train: epoch-{epoch}') # testonly
         start = time.time()
         if epoch %10 == 0:
             cprint("[TEST]")
