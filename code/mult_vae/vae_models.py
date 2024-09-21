@@ -111,7 +111,7 @@ class MultiVAE(nn.Module):
             else:
                 mu = h[:, :self.q_dims[-1]]
                 logvar = h[:, self.q_dims[-1]:]
-        return mu
+        return mu, torch.exp(0.5 * logvar) # 返回均值和标准差
 
 
     def reparameterize(self, mu, logvar):

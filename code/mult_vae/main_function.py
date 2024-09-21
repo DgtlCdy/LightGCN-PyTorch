@@ -21,7 +21,7 @@ def mult_vae_inference(bi_graph: sparse._csr.csr_matrix) -> torch.Tensor:
                         help='weight decay coefficient')
     parser.add_argument('--batch_size', type=int, default=500,
                         help='batch size')
-    parser.add_argument('--epochs', type=int, default=10,
+    parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
     parser.add_argument('--total_anneal_steps', type=int, default=200000,
                         help='the total number of gradient updates for annealing')
@@ -115,29 +115,23 @@ def mult_vae_inference(bi_graph: sparse._csr.csr_matrix) -> torch.Tensor:
 
     def get_user_emb():
         # user_array = torch.Tensor(bi_graph.toarray()).to(device)
-        user_emb = torch.zeros([n_users, 200], dtype=torch.float32, device=device)
+        user_emb_mu = torch.zeros([n_users, 200], dtype=torch.float32, device=device)
+        user_emb_std = torch.zeros([n_users, 200], dtype=torch.float32, device=device)
         for i in range(user_array.shape[0]):
-            user_emb[i:i+1, :] = model.encode_only(user_array[i:i+1, :])
-        return user_emb
+            user_emb_mu[i:i+1, :], user_emb_std[i:i+1, :] = model.encode_only(user_array[i:i+1, :])
+        return user_emb_mu, user_emb_std
 
     # At any point you can hit Ctrl + C to break out of training early.
     try:
+        with open(args.save, 'rb') as f:
+            model = torch.load(f)
+    except:
         for epoch in range(args.epochs):
             epoch_start_time = time.time()
             train()
-
         with open(args.save, 'wb') as f:
             torch.save(model, f)
 
-    except KeyboardInterrupt:
-        print('-' * 89)
-        print('Exiting from training early')
+    user_emb_mu, user_emb_std = get_user_emb()
 
-    user_emb = get_user_emb()
-    a = 1
-
-    return user_emb
-    # # Load the best saved model.
-    # with open(args.save, 'rb') as f:
-    #     model = torch.load(f)
-
+    return user_emb_mu, user_emb_std
